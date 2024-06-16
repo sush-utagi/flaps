@@ -1,8 +1,10 @@
 import os
 import time
 import random
+import neat.config
 import pygame
 import neat
+pygame.font.init()
 
 # Set the window size
 WINDOW_WIDTH = 500
@@ -17,6 +19,7 @@ PIPE_IMAGE = pygame.transform.scale2x(pygame.image.load(os.path.join("images", "
 BASE_IMAGE = pygame.transform.scale2x(pygame.image.load(os.path.join("images", "base.png")))
 BACKGROUND_IMAGE = pygame.transform.scale2x(pygame.image.load(os.path.join("images", "background.png")))
 
+STAT_FONT = pygame.font.SysFont("comicsans", 50)
 
 class Bird:
     IMAGES = BIRD_IMAGES
@@ -176,11 +179,14 @@ def blitRotateCenter(surf, image, topleft, angle):
 # ----------------------------------------------------------------------------------------------------------
 
 # WINDOW DRAWING FUNCTIONS
-def draw_window(window, bird, pipes, base):
+def draw_window(window, bird, pipes, base, score):
     window.blit(BACKGROUND_IMAGE, (0,0))
 
     for pipe in pipes:
         pipe.draw(window)
+
+    text = STAT_FONT.render("Score: " + str(score), 1, (255,255,255))
+    window.blit(text, (WINDOW_WIDTH - 10 - text.get_width(), 10))
 
     base.draw(window)
     bird.draw(window)
@@ -190,9 +196,10 @@ def draw_window(window, bird, pipes, base):
 def main():
     bird = Bird(230, 350)
     base = Base(730)
-    pipes = [Pipe(700)]
+    pipes = [Pipe(600)]
     window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     clock = pygame.time.Clock()
+    score = 0
 
     running = True
     while running:
@@ -200,6 +207,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+            # FOR MANUAL PLAY
+            # elif event.type == pygame.KEYDOWN:
+            #     if event.key == pygame.K_SPACE:
+            #         bird.jump()
             
         # bird.move()                   # test move on each frame
 
@@ -207,7 +219,7 @@ def main():
         removed_pipes = []
         for pipe in pipes:
             if pipe.collide(bird):
-                pass
+                print("COLLISION WITH PIPE")
 
             if pipe.x + pipe.PIPE_TOP.get_width() < 0:
                 removed_pipes.append(pipe)
@@ -220,14 +232,17 @@ def main():
             pipe.move()
         
         if add_pipe:
-            # score += 1
-            pipes.append(Pipe(700))
+            score += 1
+            pipes.append(Pipe(600))
 
         for item in removed_pipes:
             pipes.remove(item)
 
+        if bird.y + bird.image.get_height() >= 730:
+            pass
+
         base.move()
-        draw_window(window, bird, pipes, base)       # draw frame
+        draw_window(window, bird, pipes, base, score)       # draw frame
 
     
     pygame.quit()
@@ -235,3 +250,16 @@ def main():
 
 
 main()
+
+
+def run():
+    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                                neat.DefaultSpeciesSet, neat.DefaultStagnation, 
+                                config_path)
+
+
+
+if __name__ == "__main__":
+    local_dir = os.path.dirname(__file__)
+    config_path = os.path.join(local_dir, "config-feedforward.txt")
+    run(config_path)
