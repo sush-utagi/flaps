@@ -211,10 +211,8 @@ def main(genomes, config):
         ge.append(genome)
 
 
-
-
     base = Base(730)
-    pipes = [Pipe(600)]
+    pipes = [Pipe(700)]
     window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     clock = pygame.time.Clock()
     score = 0
@@ -238,7 +236,7 @@ def main(genomes, config):
 
         for i, bird in enumerate(birds):
             bird.move()
-            ge[i].fitness += 0.1
+            ge[i].fitness += 0.2
 
             output = nets[i].activate((bird.y, abs(bird.y - pipes[pipe_index].height), abs(bird.y - pipes[pipe_index].bottom)))
 
@@ -273,7 +271,7 @@ def main(genomes, config):
             score += 1
             for g in ge:
                 g.fitness += 5
-            pipes.append(Pipe(600))
+            pipes.append(Pipe(700))
 
         for item in removed_pipes:
             pipes.remove(item)
@@ -298,7 +296,9 @@ def run(config_path):
     statistics = neat.StatisticsReporter()
     population.add_reporter(statistics)
 
-    winner = population.run(main,100)
+    winner = population.run(main,50)
+    print('\nBest genome:\n{!s}'.format(winner))
+
 
 
 
