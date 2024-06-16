@@ -207,17 +207,19 @@ def main():
                 running = False
 
             # FOR MANUAL PLAY
-            # elif event.type == pygame.KEYDOWN:
-            #     if event.key == pygame.K_SPACE:
-            #         bird.jump()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    bird.jump()
             
-        # bird.move()                   # test move on each frame
+        bird.move()                   # test move on each frame
 
         add_pipe = False
         removed_pipes = []
         for pipe in pipes:
             if pipe.collide(bird):
-                print("COLLISION WITH PIPE")
+                print("COLLISION WITH PIPE\n")
+                print(f"YOUR SCORE: {score}")
+                running = False
 
             if pipe.x + pipe.PIPE_TOP.get_width() < 0:
                 removed_pipes.append(pipe)
@@ -242,7 +244,6 @@ def main():
         base.move()
         draw_window(window, bird, pipes, base, score)       # draw frame
 
-    
     pygame.quit()
     quit()
 
