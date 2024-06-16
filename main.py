@@ -74,3 +74,47 @@ class Bird:
             self.image = self.IMAGES[1]
         elif self.image < self.ANIMATION_TIME*4 + 1:
             self.image = self.IMAGES[0]
+            self.image_count = 0
+
+        if self.tilt <= -80:
+            self.image       = self.IMAGES[1]
+            self.image_count = self.ANIMATION_TIME*2
+
+
+        rotated_image = pygame.transform.rotate(self.image, self.tilt)
+        new_rectanlge = rotated_image.get_rect(center= self.image.get_rect(topLeft = (self.x, self.y )).center) # from stack overflow
+        window.blit(rotated_image, new_rectanlge.topleft)
+
+
+    def get_mask(self):
+        return pygame.mask.from_surface(self.image)
+    
+    ###########################################################################################################################################
+
+
+
+
+def draw_window(window, bird):
+    window.blit(BACKGROUND_IMAGE, (0,0))
+    bird.draw(window)
+    pygame.display.update()
+
+
+def main():
+    bird = Bird(200, 200)
+    window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            
+        draw_window(window, bird)
+
+    
+    pygame.quit()
+    quit()
+
+
+main()
