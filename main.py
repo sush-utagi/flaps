@@ -179,8 +179,8 @@ def blitRotateCenter(surf, image, topleft, angle):
 
 
 # ----------------------------------------------------------------------------------------------------------
-
 # WINDOW DRAWING FUNCTIONS
+
 def draw_window(window, birds, pipes, base, score):
     window.blit(BACKGROUND_IMAGE, (0,0))
 
@@ -298,8 +298,6 @@ def run(config_path):
 
     winner = population.run(main,50)
     print('\nBest genome:\n{!s}'.format(winner))
-
-
 
 
 if __name__ == "__main__":
