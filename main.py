@@ -140,14 +140,14 @@ class Base:
         self.x2 = self.WIDTH
 
     def move(self):
-        self.x1 += self.VELOCITY
-        self.x2 += self.VELOCITY
+        self.x1 -= self.VELOCITY
+        self.x2 -= self.VELOCITY
 
-        if self.x1 + self.WIDTH < 0:
-            self.x1 = self.x2 + self.WIDTH
+        if (self.x1 + self.WIDTH) < 0:
+            self.x1 = (self.x2 + self.WIDTH)
         
-        if self.x2 + self.WIDTH < 0:
-            self.x2 = self.x1 + self.WIDTH
+        if (self.x2 + self.WIDTH) < 0:
+            self.x2 = (self.x1 + self.WIDTH)
 
     def draw(self, window):
         window.blit(self.IMAGE, (self.x1, self.y))
@@ -202,6 +202,31 @@ def main():
                 running = False
             
         # bird.move()                   # test move on each frame
+
+        add_pipe = False
+        removed_pipes = []
+        for pipe in pipes:
+            if pipe.collide(bird):
+                pass
+
+            if pipe.x + pipe.PIPE_TOP.get_width() < 0:
+                removed_pipes.append(pipe)
+
+            if not pipe.passed and pipe.x < bird.x:
+                pipe.passed = True
+                add_pipe = True
+
+
+            pipe.move()
+        
+        if add_pipe:
+            # score += 1
+            pipes.append(Pipe(700))
+
+        for item in removed_pipes:
+            pipes.remove(item)
+
+        base.move()
         draw_window(window, bird, pipes, base)       # draw frame
 
     
