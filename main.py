@@ -177,7 +177,6 @@ def blitRotateCenter(surf, image, topleft, angle):
     surf.blit(rotated_image, new_rect.topleft)
 
 
-
 # ----------------------------------------------------------------------------------------------------------
 # WINDOW DRAWING FUNCTIONS
 
@@ -189,6 +188,10 @@ def draw_window(window, birds, pipes, base, score):
 
     text = STAT_FONT.render("Score: " + str(score), 1, (255,255,255))
     window.blit(text, (WINDOW_WIDTH - 10 - text.get_width(), 10))
+
+    numBirds = len(birds)
+    aliveCount = STAT_FONT.render("Alive: " + str(numBirds), 1, (255,255,255))
+    window.blit(aliveCount, (10, 10))  # Adjusted position for top left corner
 
     base.draw(window)
     # bird.draw(window)
@@ -234,12 +237,11 @@ def main(genomes, config):
             running = False
             break
 
+        # Reward birds with `1` fitness unit per second that they are alive.
         for i, bird in enumerate(birds):
             bird.move()
-            ge[i].fitness += 0.2
-
+            ge[i].fitness += 0.1
             output = nets[i].activate((bird.y, abs(bird.y - pipes[pipe_index].height), abs(bird.y - pipes[pipe_index].bottom)))
-
             if output[0] > 0.5:
                 bird.jump()
 
@@ -250,12 +252,11 @@ def main(genomes, config):
 
             for i, bird in enumerate(birds):
                 if pipe.collide(bird):
-                    print("COLLISION WITH PIPE")
-                    ge[i].fitness -= 2
+                    # print("COLLISION WITH PIPE")
+                    ge[i].fitness -= 1
                     birds.pop(i)
                     nets.pop(i)
                     ge.pop(i)
-
 
                 if not pipe.passed and pipe.x < bird.x:
                     pipe.passed = True
@@ -263,7 +264,6 @@ def main(genomes, config):
 
             if pipe.x + pipe.PIPE_TOP.get_width() < 0:
                 removed_pipes.append(pipe)
-
 
             pipe.move()
         
@@ -296,8 +296,8 @@ def run(config_path):
     statistics = neat.StatisticsReporter()
     population.add_reporter(statistics)
 
-    winner = population.run(main,50)
-    print('\nBest genome:\n{!s}'.format(winner))
+    winner = population.run(main,100)
+    print(f'\nBest genome: {winner}')
 
 
 if __name__ == "__main__":

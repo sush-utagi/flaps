@@ -4,6 +4,9 @@ import random
 import pygame
 pygame.font.init()
 
+# Flappy bird implementation in python.
+# NEEDS OPTIMIZATION: TIME/ SPACE COMPLEXITY NOT CONSIDERED.
+
 # Set the window size
 WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 800
